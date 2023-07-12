@@ -1,41 +1,16 @@
-import React, { useState } from "react";
-import { nanoid } from "nanoid";
+import React from "react";
 import { styled } from "styled-components";
-import { addTodo } from "../axios/api";
-import { useMutation, useQueryClient } from "react-query";
-import useInput from "../hooks/useInput";
+import useTodo from "../hooks/useTodo";
 
 const Input = () => {
-  // Custom Hook 사용하기
-  const [title, onChangeTitleHandler, resetTitle] = useInput("");
-  const [contents, onChangeContentsHandler, resetContents] = useInput("");
-
   // Todo 추가
-  const queryClient = useQueryClient();
-  const addMutation = useMutation(addTodo, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("todos");
-    },
-  });
-
-  // Todo 추가
-  const handleAddButton = () => {
-    if (title === "") {
-      alert("제목을 입력해주세요.");
-    } else if (contents === "") {
-      alert("내용을 입력해주세요.");
-    } else {
-      const newTodo = {
-        id: nanoid(),
-        title,
-        contents,
-        isDone: false,
-      };
-      addMutation.mutate(newTodo);
-    }
-    resetTitle();
-    resetContents();
-  };
+  const {
+    title,
+    contents,
+    onChangeTitleHandler,
+    onChangeContentsHandler,
+    addTodoItem,
+  } = useTodo();
 
   return (
     <InputContainer>
@@ -49,7 +24,13 @@ const Input = () => {
           onChange={onChangeContentsHandler}
         />
       </div>
-      <StButton onClick={handleAddButton}>추가하기</StButton>
+      <StButton
+        onClick={() => {
+          addTodoItem();
+        }}
+      >
+        추가하기
+      </StButton>
     </InputContainer>
   );
 };
