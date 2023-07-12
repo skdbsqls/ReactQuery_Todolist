@@ -1,39 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-import { getTodos, deleteTodo, toggleTodo } from "../axios/api";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import useTodo from "../hooks/useTodo";
 
 const TodoList = ({ listIsDone }) => {
-  const queryClient = useQueryClient();
-
   // Todos 조회
-  const { isLoading, isError, data: todos } = useQuery("todos", getTodos);
-
-  // Todo 삭제
-  const deleteMutation = useMutation(deleteTodo, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("todos");
-    },
-  });
-  const handleDeleteButton = (id) => {
-    deleteMutation.mutate(id);
-  };
-
-  // Todo 수정
-  const toggleMutation = useMutation(toggleTodo, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("todos");
-    },
-  });
-  const handleToggleButton = (id) => {
-    const todo = todos.find((todo) => todo.id === id);
-    const updatedTodo = {
-      ...todo,
-      isDone: !todo.isDone,
-    };
-    toggleMutation.mutate(updatedTodo);
-  };
+  const { isLoading, isError, todos, deleteTodoItem, toggleTodoItem } =
+    useTodo();
 
   // Todos 조회
   if (isLoading) {
@@ -63,13 +36,13 @@ const TodoList = ({ listIsDone }) => {
               <ButtonContainer>
                 <StButton
                   border="3px solid red"
-                  onClick={() => handleDeleteButton(todo.id)}
+                  onClick={() => deleteTodoItem(todo.id)}
                 >
                   삭제하기
                 </StButton>
                 <StButton
                   border="3px solid green"
-                  onClick={() => handleToggleButton(todo.id)}
+                  onClick={() => toggleTodoItem(todo.id)}
                 >
                   {todo.isDone ? "취소" : "완료"}
                 </StButton>

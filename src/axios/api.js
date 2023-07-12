@@ -1,27 +1,28 @@
 import axios from "axios";
 
+const base = axios.create({
+  baseURL: process.env.REACT_APP_SERVER_URL,
+});
+
 // 조회
 const getTodos = async () => {
-  const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/todos`);
+  const response = await base.get(`/todos`);
   return response.data;
 };
 
 // 추가
 const addTodo = async (newTodo) => {
-  await axios.post(`${process.env.REACT_APP_SERVER_URL}/todos`, newTodo);
+  await base.post(`/todos`, newTodo);
 };
 
 // 삭제
 const deleteTodo = async (id) => {
-  await axios.delete(`${process.env.REACT_APP_SERVER_URL}/todos/${id}`);
+  await base.delete(`/todos/${id}`);
 };
 
 // 수정
 const toggleTodo = async (updatedTodo) => {
-  await axios.patch(
-    `${process.env.REACT_APP_SERVER_URL}/todos/${updatedTodo.id}`,
-    updatedTodo
-  );
+  await base.patch(`/todos/${updatedTodo.id}`, updatedTodo);
 };
 
 // export
